@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin — Pétition</title>
+<style>
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,#ffedd5,#f59e0b);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:60px 20px;
+  min-height:100vh;
+}
+.panel{
+  background:#fff7ed;
+  padding:30px;
+  border-radius:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,.15);
+  width:420px;
+}
+h1{text-align:center;color:#78350f;margin-bottom:20px}
+.list .entry{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#fde68a;
+  padding:8px 12px;
+  border-radius:8px;
+  margin-bottom:8px;
+  font-weight:600;
+  color:#78350f;
+}
+button{
+  border:none;
+  border-radius:6px;
+  background:#dc2626;
+  color:#fff;
+  font-weight:600;
+  padding:6px 10px;
+  cursor:pointer;
+}
+button:hover{background:#b91c1c}
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:15px;
+}
+.hidden{display:none}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.clearAll{
+  background:#ea580c;
+  padding:6px 10px;
+}
+.clearAll:hover{background:#c2410c}
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>Espace admin</h1>
+  <input type="password" id="pass" placeholder="Mot de passe">
+  <div id="admin" class="hidden">
+    <div class="topbar">
+      <strong>Signatures enregistrées</strong>
+      <button class="clearAll" id="clearAll">Tout effacer</button>
+    </div>
+    <div class="list" id="list"></div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = "admin123"; // ← change ici ton mot de passe
+const passInput=document.getElementById("pass");
+const admin=document.getElementById("admin");
+const list=document.getElementById("list");
+const clearAll=document.getElementById("clearAll");
+
+passInput.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    if(passInput.value===PASSWORD){
+      passInput.classList.add("hidden");
+      admin.classList.remove("hidden");
+      render();
+    } else {
+      alert("Mot de passe incorrect");
+    }
+  }
+});
+
+function getVotes(){return JSON.parse(localStorage.getItem("votes")||"[]")}
+function saveVotes(v){localStorage.setItem("votes",JSON.stringify(v))}
+
+function render(){
+  list.innerHTML="";
+  const data=getVotes();
+  if(data.length===0){
+    const empty=document.createElement("div");
+    empty.textContent="Aucune signature.";
+    empty.style.color="#78350f";
+    empty.style.textAlign="center";
+    list.appendChild(empty);
+    return;
+  }
+  data.forEach((v,i)=>{
+    const row=document.createElement("div");
+    row.className="entry";
+    row.textContent=v.name || "Anonyme";
+    const del=document.createElement("button");
+    del.textContent="Supprimer";
+    del.onclick=()=>{
+      data.splice(i,1);
+      saveVotes(data);
+      render();
+    };
+    row.appendChild(del);
+    list.appendChild(row);
+  });
+}
+
+clearAll.onclick=()=>{
+  if(confirm("Effacer toutes les signatures locales ?")){
+    localStorage.removeItem("votes");
+    render();
+  }
+};
+</script>
+</body>
+</html>

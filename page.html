@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pétition Automne</title>
+<style>
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,#ffedd5,#f59e0b);
+  overflow:hidden;
+}
+header{
+  text-align:center;
+  color:#78350f;
+  font-size:1.8rem;
+  font-weight:700;
+  margin-top:35px;
+  text-shadow:0 2px 3px rgba(0,0,0,0.1);
+}
+.container{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:50px;
+  padding:60px 40px;
+  position:relative;
+  z-index:2;
+}
+.form{
+  background:#fff7ed;
+  padding:30px;
+  border-radius:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,.15);
+  width:340px;
+  text-align:center;
+}
+.server img{
+  width:90px;height:90px;
+  border-radius:50%;
+  border:3px solid #92400e;
+  margin-bottom:15px;
+}
+h1{
+  color:#78350f;
+  font-size:1.4rem;
+  margin-bottom:25px;
+}
+input,button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:15px;
+  outline:none;
+}
+input:focus{border-color:#f97316;}
+button{
+  background:#ea580c;
+  color:white;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+button:hover{background:#c2410c}
+.list{
+  background:#fff7ed;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,.15);
+  width:300px;
+  max-height:540px;
+  overflow-y:auto;
+}
+.item{
+  background:#fde68a;
+  border-radius:8px;
+  padding:10px 12px;
+  margin-bottom:10px;
+  font-weight:600;
+  color:#78350f;
+  text-align:left;
+}
+.leaf{
+  position:fixed;
+  top:-10vh;
+  width:20px;height:20px;
+  background-color:#f97316;
+  clip-path:polygon(50% 0%,100% 40%,70% 100%,30% 100%,0% 40%);
+  opacity:0.8;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  0%{transform:translateY(-10vh) rotate(0deg);opacity:0}
+  10%{opacity:1}
+  100%{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
+</style>
+</head>
+<body>
+<header>🍂 Arrancars dégage, fini le carnage ! 🍁</header>
+<div class="container">
+  <div class="form">
+    <div class="server">
+      <!-- Image du serveur Discord -->
+      <img src="https://pa1.aminoapps.com/8523/8de4c68306c30fff651a15641ce07462070cb72cr1-640-360_128.gif" alt="PP serveur">
+    </div>
+    <h1>Pétition</h1>
+    <input type="text" id="name" placeholder="Pseudo Discord">
+    <button id="sign">Signer</button>
+  </div>
+
+  <div class="list" id="list"></div>
+</div>
+
+<script>
+const list=document.getElementById("list");
+const sign=document.getElementById("sign");
+function getVotes(){return JSON.parse(localStorage.getItem("votes")||"[]")}
+function saveVotes(v){localStorage.setItem("votes",JSON.stringify(v))}
+function render(){
+  list.innerHTML="";
+  getVotes().forEach(v=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.textContent=v.name?v.name:"Anonyme";
+    list.appendChild(d);
+  });
+}
+sign.onclick=()=>{
+  const name=document.getElementById("name").value.trim();
+  if(!name)return;
+  const votes=getVotes();
+  votes.unshift({name});
+  saveVotes(votes);
+  document.getElementById("name").value="";
+  render();
+};
+render();
+
+// Feuilles automnales
+for(let i=0;i<25;i++){
+  const leaf=document.createElement("div");
+  leaf.className="leaf";
+  leaf.style.left=Math.random()*100+"vw";
+  leaf.style.animationDuration=5+Math.random()*5+"s";
+  leaf.style.backgroundColor=["#f97316","#ea580c","#facc15","#eab308"][Math.floor(Math.random()*4)];
+  leaf.style.animationDelay=Math.random()*5+"s";
+  document.body.appendChild(leaf);
+}
+</script>
+</body>
+</html>
